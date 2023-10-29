@@ -1,7 +1,10 @@
 [package]
 name = "manchu-converter"
+authors = ["Haruki Sakajo <sakajoharuki@gmail.com>"]
+description = "Converts transcripted Manchu text to Manchu script with Manchu alphabet."
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -3,6 +3,18 @@ use std::collections::HashMap;
 use unicode_segmentation::UnicodeSegmentation;
 
 pub trait ManchuConverter {
+    /// Convert Latin to Manchu Script and return a String
+    ///
+    /// ## Example
+    ///
+    /// ```rust
+    /// use manchu_converter::ManchuConverter;
+    ///
+    /// fn main() {
+    ///     let text = "bejing be baha";
+    ///     let result = text.convert().unwrap();
+    ///     assert_eq!(result, "ᠪᡝᠵᡳᠩ ᠪᡝ ᠪᠠᡥᠠ")
+    /// }
     fn convert(&self) -> Result<String, String>;
 }
 
