@@ -7,7 +7,7 @@ A simple converter for Manchu script. It converts transliteration to Manchu scri
 ## Example
 
 ```rust
-use manchu_converter::convert::ManchuConverter;
+use manchu_converter::ManchuConverter;
 
 fn main() {
     let text = "wesimburengge";
