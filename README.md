@@ -7,12 +7,11 @@ A simple converter for Manchu script. It converts transliteration to Manchu scri
 ## Example
 
 ```rust
-use manchu_converter::ManchuConverter;
+use manchu_converter::convert::ManchuConverter;
 
 fn main() {
-    let text = "bejing be baha";
-    let result = text.convert().unwrap();
-    assert_eq!(result, "ᠪᡝᠵᡳᠩ ᠪᡝ ᠪᠠᡥᠠ")
+    let text = "wesimburengge";
+    let r = text.convert_to_manchu().unwrap();
+    assert_eq!(r, "ᠸᡝᠰᡳᠮᠪᡠᡵᡝᠩᡤᡝ")
 }
 ```
-

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use unicode_segmentation::UnicodeSegmentation;
 
 pub trait ManchuConverter {
-    /// Convert Latin to Manchu Script and return a String
+    /// Convert transcripted texts to Manchu Script and return a String
     ///
     /// ## Example
     ///
@@ -11,16 +11,16 @@ pub trait ManchuConverter {
     /// use manchu_converter::ManchuConverter;
     ///
     /// fn main() {
-    ///     let text = "bejing be baha";
-    ///     let result = text.convert().unwrap();
-    ///     assert_eq!(result, "ᠪᡝᠵᡳᠩ ᠪᡝ ᠪᠠᡥᠠ")
+    ///     let text = "manju";
+    ///     let result = text.convert_to_manchu().unwrap();
+    ///     assert_eq!(result, "ᠮᠠᠨᠵᡠ")
     /// }
-    fn convert(&self) -> Result<String, String>;
+    fn convert_to_manchu(&self) -> Result<String, String>;
 }
 
 impl ManchuConverter for str {
     #[inline]
-    fn convert(&self) -> Result<String, String> {
+    fn convert_to_manchu(&self) -> Result<String, String> {
         let latin_manchu_map = get_latin_manchu_map();
         let words = self.split_whitespace();
         let mut convert_result = String::new();
@@ -87,7 +87,10 @@ fn get_latin_manchu_map<'a>() -> HashMap<&'a str, u16> {
     ])
 }
 
-fn convert_latin_to_manchu_unicode(word: &str, latin_manchu_map: &HashMap<&str, u16>) -> Result<Vec<u16>, String> {
+fn convert_latin_to_manchu_unicode(
+    word: &str,
+    latin_manchu_map: &HashMap<&str, u16>,
+) -> Result<Vec<u16>, String> {
     let graphemes = UnicodeSegmentation::graphemes(word, true).collect::<Vec<&str>>();
     let mut unicode_list = Vec::new();
     let mut i = 0;
@@ -119,7 +122,10 @@ fn convert_latin_to_manchu_unicode(word: &str, latin_manchu_map: &HashMap<&str, 
                         i += 3;
                         continue;
                     }
-                    None => {has_error = true; break;}
+                    None => {
+                        has_error = true;
+                        break;
+                    }
                 }
             }
         }
@@ -131,7 +137,10 @@ fn convert_latin_to_manchu_unicode(word: &str, latin_manchu_map: &HashMap<&str, 
                         i += 2;
                         continue;
                     }
-                    None => {has_error = true; break;}
+                    None => {
+                        has_error = true;
+                        break;
+                    }
                 }
             }
         }
@@ -141,7 +150,10 @@ fn convert_latin_to_manchu_unicode(word: &str, latin_manchu_map: &HashMap<&str, 
                 i += 1;
                 continue;
             }
-            None => {has_error = true; break;}
+            None => {
+                has_error = true;
+                break;
+            }
         }
     }
     if has_error {
@@ -159,10 +171,17 @@ mod tests {
     fn it_works() {
         let latin_manchu_map = get_latin_manchu_map();
         let result = convert_latin_to_manchu_unicode("takūrafi", &latin_manchu_map).unwrap();
-        assert_eq!(result, vec![0x1868, 0x1820, 0x1874, 0x1861, 0x1875, 0x1820, 0x1876, 0x1873]);
+        assert_eq!(
+            result,
+            vec![0x1868, 0x1820, 0x1874, 0x1861, 0x1875, 0x1820, 0x1876, 0x1873]
+        );
 
-        let text = "bejing be baha";
-        let r = text.convert().unwrap();
-        assert_eq!(r, "ᠪᡝᠵᡳᠩ ᠪᡝ ᠪᠠᡥᠠ")
+        let text = "cooha be acaha";
+        let r = text.convert_to_manchu().unwrap();
+        assert_eq!(r, "ᠴᠣᠣᡥᠠ ᠪᡝ ᠠᠴᠠᡥᠠ");
+
+        let text_ng = "wesimburengge";
+        let r_ng = text_ng.convert_to_manchu().unwrap();
+        assert_eq!(r_ng, "ᠸᡝᠰᡳᠮᠪᡠᡵᡝᠩᡤᡝ")
     }
 }
