@@ -144,6 +144,68 @@ fn convert_latin_to_manchu_unicode(
                 }
             }
         }
+        if graphemes[i] == "k" && i != graphemes.len() - 1 {
+            if graphemes[i + 1] == "'" {
+                match latin_manchu_map.get("k'") {
+                    Some(unicode) => {
+                        unicode_list.push(unicode.clone());
+                        i += 2;
+                        continue;
+                    }
+                    None => {
+                        has_error = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if graphemes[i] == "g" && i != graphemes.len() - 1 {
+            if graphemes[i + 1] == "'" {
+                match latin_manchu_map.get("g'") {
+                    Some(unicode) => {
+                        unicode_list.push(unicode.clone());
+                        i += 2;
+                        continue;
+                    }
+                    None => {
+                        has_error = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if graphemes[i] == "h" && i != graphemes.len() - 1 {
+            if graphemes[i + 1] == "'" {
+                match latin_manchu_map.get("h'") {
+                    Some(unicode) => {
+                        unicode_list.push(unicode.clone());
+                        i += 2;
+                        continue;
+                    }
+                    None => {
+                        has_error = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if graphemes[i] == "c" && i != graphemes.len() - 1 {
+            if graphemes[i + 1] == "'" && i != graphemes.len() - 2 {
+                if graphemes[i + 2] == "y" {
+                    match latin_manchu_map.get("c'y") {
+                        Some(unicode) => {
+                            unicode_list.push(unicode.clone());
+                            i += 3;
+                            continue;
+                        }
+                        None => {
+                            has_error = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         match latin_manchu_map.get(graphemes[i]) {
             Some(unicode) => {
                 unicode_list.push(unicode.clone());
@@ -182,6 +244,6 @@ mod tests {
 
         let text_ng = "wesimburengge";
         let r_ng = text_ng.convert_to_manchu().unwrap();
-        assert_eq!(r_ng, "ᠸᡝᠰᡳᠮᠪᡠᡵᡝᠩᡤᡝ")
+        assert_eq!(r_ng, "ᠸᡝᠰᡳᠮᠪᡠᡵᡝᠩᡤᡝ");
     }
 }
