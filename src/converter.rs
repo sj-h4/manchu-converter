@@ -114,7 +114,7 @@ fn convert_latin_to_manchu_unicode(
                 }
             }
         }
-        if graphemes[i] == "t" && i != graphemes.len() - 2 {
+        if graphemes[i] == "t" && i != graphemes.len() - 1 {
             if graphemes[i + 1] == "s" && graphemes[i + 2] == "'" {
                 match latin_manchu_map.get("ts'") {
                     Some(unicode) => {
