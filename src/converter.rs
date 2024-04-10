@@ -16,7 +16,7 @@ pub trait ManchuConverter {
     ///
     /// fn main() {
     ///     let text = "manju";
-    ///     let result = text.convert_to_manchu().unwrap();
+    ///     let result = text.convert_to_manchu(&None).unwrap();
     ///     assert_eq!(result, "ᠮᠠᠨᠵᡠ")
     /// }
     fn convert_to_manchu(&self, ignore_error: &Option<bool>) -> Result<String, String>;
