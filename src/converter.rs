@@ -26,31 +26,57 @@ impl ManchuConverter for str {
     #[inline]
     fn convert_to_manchu(&self, ignore_error: &Option<bool>) -> Result<String, String> {
         let latin_manchu_map = get_latin_manchu_map();
-        let words = self.split_whitespace();
+        let lines = self.lines();
+        // Insert \n between lines
+        let lines_len = lines.clone().count();
+        let lines_manchu = lines.flat_map(|line| {
+            let words = line.split_whitespace().collect::<Vec<&str>>();
+            let result = match words_to_manchu_unicode(words, &latin_manchu_map, ignore_error) {
+                Ok(value) => value,
+                Err(value) => return value,
+            };
+            Ok(result)
+        });
         let mut convert_result = String::new();
-        let mut has_error = false;
-        let mut error_words = Vec::new();
-        for word in words {
-            match convert_latin_to_manchu_unicode(word, &latin_manchu_map, ignore_error) {
-                Ok(unicode_list) => {
-                    let text = String::from_utf16(unicode_list.as_slice()).unwrap();
-                    convert_result.push_str(&text);
-                }
-                Err(_) => {
-                    has_error = true;
-                    error_words.push(word);
-                    convert_result.push_str(word);
-                }
+        lines_manchu.enumerate().for_each(|(i, line)| {
+            convert_result.push_str(&line);
+            if i != lines_len - 1 {
+                convert_result.push_str("\n");
             }
-            convert_result.push_str(" ");
-        }
-        if has_error && !ignore_error.unwrap_or(false) {
-            let error_message = format!("Error: Valid syllable not found in {:?}", error_words);
-            return Err(error_message);
-        }
-        convert_result.pop();
+        });
+
         Ok(convert_result)
     }
+}
+
+fn words_to_manchu_unicode(
+    words: Vec<&str>,
+    latin_manchu_map: &HashMap<&str, u16>,
+    ignore_error: &Option<bool>,
+) -> Result<String, Result<String, String>> {
+    let mut convert_result = String::new();
+    let mut has_error = false;
+    let mut error_words = Vec::new();
+    for word in words {
+        match convert_latin_to_manchu_unicode(word, latin_manchu_map, ignore_error) {
+            Ok(unicode_list) => {
+                let text = String::from_utf16(unicode_list.as_slice()).unwrap();
+                convert_result.push_str(&text);
+            }
+            Err(_) => {
+                has_error = true;
+                error_words.push(word);
+                convert_result.push_str(word);
+            }
+        }
+        convert_result.push_str(" ");
+    }
+    if has_error && !ignore_error.unwrap_or(false) {
+        let error_message = format!("Error: Valid syllable not found in {:?}", error_words);
+        return Err(Err(error_message));
+    }
+    convert_result.pop();
+    Ok(convert_result)
 }
 
 fn convert_latin_to_manchu_unicode(
@@ -212,5 +238,9 @@ mod tests {
         let text_ng = "wesimburengge";
         let r_ng = text_ng.convert_to_manchu(&None).unwrap();
         assert_eq!(r_ng, "ᠸᡝᠰᡳᠮᠪᡠᡵᡝᠩᡤᡝ");
+
+        let text = "cooha be\nacaha";
+        let r = text.convert_to_manchu(&None).unwrap();
+        assert_eq!(r, "ᠴᠣᠣᡥᠠ ᠪᡝ\nᠠᠴᠠᡥᠠ");
     }
 }
