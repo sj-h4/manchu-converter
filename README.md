@@ -1,6 +1,6 @@
 # manchu-converter
 
-![crates.io](https://img.shields.io/crates/v/manchu-converter)
+[![crates.io](https://img.shields.io/crates/v/manchu-converter)](https://crates.io/crates/manchu-converter)
 
 This project is in work in progress.
 
